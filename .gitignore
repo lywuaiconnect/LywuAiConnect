@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+.output/
+
+# Cloudflare
+.wrangler/
+.dev.vars
+
+# Environment & Secrets
+.env
+.env.local
+.env.*.local
+
+# OS & Logs
+*.log
+.DS_Store
+Thumbs.db

@@ -6,7 +6,8 @@
   "packageManager": "pnpm@9.0.0",
   "scripts": {
     "dev": "pnpm --filter @liwuai/api dev --parallel --filter @liwuai/web dev",
-    "deploy": "pnpm --filter @liwuai/api deploy && pnpm --filter @liwuai/web deploy",
+    "build": "pnpm --filter @liwuai/web build",
+    "deploy": "pnpm run build && wrangler deploy",
     "db:generate": "pnpm --filter @liwuai/db generate",
     "db:migrate": "pnpm --filter @liwuai/api db:migrate",
     "db:push": "pnpm --filter @liwuai/api db:push"
