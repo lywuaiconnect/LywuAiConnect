@@ -2,7 +2,7 @@ export async function generateText({
   apiKey,
   baseUrl,
   prompt,
-  model = 'openrouter/auto',
+  model = 'openrouter/free',
   systemPrompt = 'You are a helpful social media assistant.',
 }: {
   apiKey: string;
