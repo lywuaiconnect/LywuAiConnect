@@ -18,6 +18,7 @@ const app = new Hono<{
     OPENROUTER_API_KEY: string;
     JWT_SECRET: string;
     OPENROUTER_BASE_URL: string;
+    ASSETS: Fetcher;
   };
 }>();
 
@@ -101,5 +102,13 @@ app.route('/api/channels', channels);
 app.route('/api/posts', posts);
 app.route('/api/ai', ai);
 app.route('/api/image', image);
+
+// Serve Static Assets (React SPA on Cloudflare Pages / Workers Assets)
+app.get('*', async (c) => {
+  if (c.env.ASSETS && typeof c.env.ASSETS.fetch === 'function') {
+    return await c.env.ASSETS.fetch(c.req.raw);
+  }
+  return c.text('LiwuAi Connect API Ready', 200);
+});
 
 export default app;
