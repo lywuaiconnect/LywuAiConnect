@@ -19,6 +19,7 @@
   ],
   "vars": {
     "OPENROUTER_BASE_URL": "https://openrouter.ai/api/v1",
-    "OPENROUTER_MODEL": "openrouter/free"
+    "OPENROUTER_MODEL": "openrouter/free",
+    "JWT_SECRET": "liwuai-connect-secure-jwt-secret-key-32chars"
   }
 }
