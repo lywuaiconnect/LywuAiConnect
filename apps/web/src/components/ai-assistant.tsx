@@ -183,22 +183,95 @@ Try asking: "How do I schedule a post?" or "What can I do with the Composer?"`
   const getAIResponse = async (question: string) => {
     setIsLoading(true);
 
+    // Try to call the OpenRouter API through your worker
+    try {
+      const response = await fetch('/api/ai/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: question,
+          context: currentPage
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setMessages(prev => [...prev, { role: 'assistant', content: data.reply || data.response || data.message }]);
+        setIsLoading(false);
+        return;
+      }
+    } catch (error) {
+      // Fall through to local help if API unavailable
+    }
+
+    // Fallback to local help
     const lowerQuestion = question.toLowerCase();
 
     let response = '';
 
     if (lowerQuestion.includes('schedule') || lowerQuestion.includes('post') && lowerQuestion.includes('when')) {
-      response = `To schedule a post:\n\n1. Click the "Composer" button in the top right\n2. Write or paste your content\n3. Click "Schedule" instead of "Post"\n4. Choose your date and time\n5. Select which channels to post to\n\n💡 Pro tip: Check the Calendar view to see optimal posting times suggested by AI!`;
+      response = `To schedule a post:\n\n1. Click the "Composer" button in the top right
+2. Write or paste your content
+3. Click "Schedule" instead of "Post"
+4. Choose your date and time
+5. Select which channels to post to
+
+💡 Pro tip: Check the Calendar view to see optimal posting times suggested by AI!`;
     } else if (lowerQuestion.includes('composer') || lowerQuestion.includes('ai') && lowerQuestion.includes('write')) {
-      response = `The AI Composer helps you:\n\n• Generate post ideas automatically\n• Rewrite and improve existing content\n• Optimize for different platforms (Twitter, LinkedIn, Instagram)\n• Add relevant hashtags\n• Adjust tone (professional, casual, creative, energetic)\n\nJust type your idea in the Composer and click "Generate" to let AI help craft your message.`;
+      response = `The AI Composer helps you:\n\n• Generate post ideas automatically
+• Rewrite and improve existing content
+• Optimize for different platforms (Twitter, LinkedIn, Instagram)
+• Add relevant hashtags
+• Adjust tone (professional, casual, creative, energetic)
+
+Just type your idea in the Composer and click "Generate" to let AI help craft your message.`;
     } else if (lowerQuestion.includes('how to connect') || lowerQuestion.includes('channel')) {
-      response = `To connect social channels:\n\n1. Go to the "Channels" page in the navigation\n2. Click "Connect" for your platform\n3. You'll be redirected to the platform's OAuth\n4. Grant permission and you're done!\n\nSupported platforms: Instagram, Facebook, Twitter/X, LinkedIn, TikTok, Pinterest, Bluesky, Mastodon, Threads, and more.`;
+      response = `To connect social channels:\n\n1. Go to the "Channels" page in the navigation
+2. Click "Connect" for your platform
+3. You'll be redirected to the platform's OAuth
+4. Grant permission and you're done!
+
+Supported platforms: Instagram, Facebook, Twitter/X, LinkedIn, TikTok, Pinterest, Bluesky, Mastodon, Threads, and more.`;
     } else if (lowerQuestion.includes('analytics') || lowerQuestion.includes('performance')) {
-      response = `Analytics Dashboard features:\n\n• Track engagement rates (likes, comments, shares)\n• See your most successful posts\n• Compare performance across platforms\n• Get AI suggestions to improve your strategy\n\nNavigate to Analytics to explore insights about your content performance.`;
+      response = `Analytics Dashboard features:\n\n• Track engagement rates (likes, comments, shares)
+• See your most successful posts
+• Compare performance across platforms
+• Get AI suggestions to improve your strategy
+
+Navigate to Analytics to explore insights about your content performance.`;
     } else if (lowerQuestion.includes('free') || lowerQuestion.includes('cost')) {
-      response = `LiwuAI Connect is 100% free forever!\n\n• No credit card required\n• No time limits\n• All basic features included\n• Premium features for power users coming soon\n\nCreated by the team behind LiwuAi - the AI website builder.`;
+      response = `LiwuAI Connect is 100% free forever!
+
+• No credit card required
+• No time limits
+• All basic features included
+• Premium features for power users coming soon
+
+Created by the team behind LiwuAi - the AI website builder.`;
     } else {
-      response = `I can help you with:\n\n**Posting & Content:**\n• Scheduling posts\n• AI content generation\n• Platform optimization\n\n**Analytics:**\n• Performance tracking\n• Best time suggestions\n• Content insights\n\n**Management:**\n• Connecting channels\n• Team collaboration\n• Comment inbox\n\nTry asking me specific questions like:\n"How do I schedule my first post?"\n"What platforms can I connect?"\n"How does the AI composer work?"`;
+      response = `I can help you with:
+
+**Posting & Content:**
+• Scheduling posts
+• AI content generation
+• Platform optimization
+
+**Analytics:**
+• Performance tracking
+• Best time suggestions
+• Content insights
+
+**Management:**
+• Connecting channels
+• Team collaboration
+• Comment inbox
+
+Try asking me specific questions like:
+"How do I schedule my first post?"
+"What platforms can I connect?"
+"How does the AI composer work?"`;
     }
 
     setMessages(prev => [...prev, { role: 'assistant', content: response }]);
